@@ -2,6 +2,7 @@
 > part of golang console
 
 > 依赖 doggytty/goutils
+> go get -u github.com/doggytty/goutils
 
 > 支持用户: root/sudo user
 

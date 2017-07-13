@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 	"regexp"
-	osutils "doggytty/goutils/systems"
+	osutils "github.com/doggytty/goutils/systems"
 )
 
 // type: bios system baseboard chassis processor memory Cache connector slot
