@@ -1,6 +1,8 @@
 # golang dmidecode
 > part of golang console
 
+> 依赖 doggytty/goutils
+
 > 支持用户: root/sudo user
 
 ### 命令:

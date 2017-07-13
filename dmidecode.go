@@ -4,52 +4,14 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"strings"
 	"regexp"
-	"bytes"
+	osutils "doggytty/goutils/systems"
 )
 
 // type: bios system baseboard chassis processor memory Cache connector slot
 
 const DEBUG = true
-
-// linux判断命令是否安装
-func CommandExist(command string) (string, error) {
-	path, err := exec.LookPath(command)
-	if err != nil {
-		if DEBUG {
-			log.Println("命令未安装!")
-		}
-		return "", err
-	}
-	if DEBUG {
-		log.Printf("命令已安装,路径:%s\n", path)
-	}
-	return path, nil
-}
-
-func ExecuteCommand(cmd string) (string, error) {
-	tty := exec.Command("/bin/sh", "-c", cmd)
-	// stdout
-	var out bytes.Buffer
-	tty.Stdout = &out
-	// stderr
-	var stdErr bytes.Buffer
-	tty.Stderr = &stdErr
-	// run command
-	err := tty.Run()
-	if err != nil {
-		if DEBUG {
-			log.Printf("error: %q\n", stdErr.String())
-		}
-		return "", err
-	}
-	if DEBUG {
-		log.Printf("out: %q\n", out.String())
-	}
-	return out.String(), nil
-}
 
 type DmiDecode struct {
 	Path     string // dmidecode的安装路径
@@ -63,7 +25,7 @@ func Instance() *DmiDecode {
 	// 初始化
 	d := new(DmiDecode)
 	// 查找dmidecode的路径
-	d.Path, d.LastErr = CommandExist("dmidecode")
+	d.Path, d.LastErr = osutils.CommandExist("dmidecode")
 	if d.LastErr != nil {
 		d.Path = ""
 	}
@@ -129,7 +91,7 @@ func (d *DmiDecode) QueryBIOS() (*BiosInfo, *BiosLanguage, error) {
 	if DEBUG {
 		log.Println("now query bios info: " + cmd)
 	}
-	bios, err := ExecuteCommand(cmd)
+	bios, err := osutils.ExecuteCommand(cmd)
 	if err != nil {
 		if DEBUG {
 			log.Println(err)
@@ -221,7 +183,7 @@ func (d *DmiDecode) QuerySystem() (*SystemInfo, error) {
 	if DEBUG {
 		log.Println("now query System info: " + cmd)
 	}
-	system, err := ExecuteCommand(cmd)
+	system, err := osutils.ExecuteCommand(cmd)
 	if err != nil {
 		if DEBUG {
 			log.Println(err)
@@ -297,7 +259,7 @@ func (d *DmiDecode) QueryBaseBoard() (*BaseBoardInfo, error) {
 	if DEBUG {
 		log.Println("now query baseboard info: " + cmd)
 	}
-	baseBoard, err := ExecuteCommand(cmd)
+	baseBoard, err := osutils.ExecuteCommand(cmd)
 	if err != nil {
 		if DEBUG {
 			log.Println(err)
@@ -389,7 +351,7 @@ func (d *DmiDecode) QueryChassis() (*ChassisInfo, error) {
 	if DEBUG {
 		log.Println("now query chassis info: " + cmd)
 	}
-	chassis, err := ExecuteCommand(cmd)
+	chassis, err := osutils.ExecuteCommand(cmd)
 	if err != nil {
 		if DEBUG {
 			log.Println(err)
@@ -503,7 +465,7 @@ func (d *DmiDecode) QueryProcessor() (*ProcessorInfo, error) {
 	if DEBUG {
 		log.Println("now query chassis info: " + cmd)
 	}
-	processor, err := ExecuteCommand(cmd)
+	processor, err := osutils.ExecuteCommand(cmd)
 	if err != nil {
 		if DEBUG {
 			log.Println(err)
@@ -647,7 +609,7 @@ func (d *DmiDecode) QueryMemory() (*MemoryInfo, error) {
 	if DEBUG {
 		log.Println("now query memory info: " + cmd)
 	}
-	memory, err := ExecuteCommand(cmd)
+	memory, err := osutils.ExecuteCommand(cmd)
 	if err != nil {
 		if DEBUG {
 			log.Println(err)
@@ -776,7 +738,7 @@ func (d *DmiDecode) QueryCache() ([]*CacheInfo, error) {
 	if DEBUG {
 		log.Println("now query cache info: " + cmd)
 	}
-	cache, err := ExecuteCommand(cmd)
+	cache, err := osutils.ExecuteCommand(cmd)
 	if err != nil {
 		if DEBUG {
 			log.Println(err)
@@ -856,7 +818,7 @@ func (d *DmiDecode) QueryConnector() ([]*PortConnectorInfo, error) {
 	if DEBUG {
 		log.Println("now query connector info: " + cmd)
 	}
-	connector, err := ExecuteCommand(cmd)
+	connector, err := osutils.ExecuteCommand(cmd)
 	if err != nil {
 		if DEBUG {
 			log.Println(err)
@@ -921,7 +883,7 @@ func (d *DmiDecode) QuerySlot() ([]*SystemSlotInfo, error) {
 	if DEBUG {
 		log.Println("now query slot info: " + cmd)
 	}
-	slot, err := ExecuteCommand(cmd)
+	slot, err := osutils.ExecuteCommand(cmd)
 	if err != nil {
 		if DEBUG {
 			log.Println(err)
